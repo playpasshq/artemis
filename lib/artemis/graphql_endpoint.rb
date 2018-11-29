@@ -46,9 +46,13 @@ module Artemis
     end
 
     def schema
+      org_err, $stderr = $stderr, File.open(File::NULL, "w")
+
       @schema || @mutex_for_schema.synchronize do
         @schema ||= ::GraphQL::Client.load_schema(schema_path.presence || connection)
       end
+    ensure
+      $stderr = org_err
     end
     alias load_schema! schema
 
